@@ -204,6 +204,10 @@ textarea {
     width: 100%;
 }
 
+#tr0 .file {
+    width: 100%;
+    text-align: left
+}
 .list-table .file {
     display: block;
 }
@@ -346,17 +350,16 @@ textarea {
 <body>
 
 <script>
-    let loadingBox = document.createElement("div");
+       let loadingBox = document.createElement("div");
        loadingBox.id="loadingBox";
        loadingBox.innerHTML=`<div class="loading-box"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>`;
        loadingBox.hidden=true;
        document.body.prepend(loadingBox);
 </script>
-
     <div class="topbar">
-        <span class="title">
+      <span class="title">
         <a href="<?php echo $_SERVER['base_path']; ?>"><?php echo $_SERVER['sitename']; ?></a>
-        </span>
+      </span>
 <?php
     if (getConfig('admin')!='') if (!$_SERVER['admin']) {
         if (getConfig('adminloginpage')=='') { ?>
@@ -366,7 +369,7 @@ textarea {
         <li class="operate"><ion-icon name="construct"></ion-icon><?php echo getconstStr('Operate'); ?><ul>
 <?php   if (isset($files['folder'])) { ?>
             <li><a onclick="showdiv(event,'create','');"><ion-icon name="add-circle"></ion-icon><?php echo getconstStr('Create'); ?></a></li>
-            <li><a onclick="showdiv(event,'encrypt','');"><ion-icon name="lock"></ion-icon><?php echo getconstStr('encrypt'); ?></a></li>
+            <li><a onclick="showdiv(event,'encrypt','');"><ion-icon name="lock"></ion-icon><?php echo getconstStr('Encrypt'); ?></a></li>
             <li><a href="?RefreshCache"><ion-icon name="refresh"></ion-icon><?php echo getconstStr('RefreshCache'); ?></a></li>
 <?php   } ?>
             <li><a href="<?php echo isset($_GET['preview'])?'?preview&':'?';?>setup"><ion-icon name="settings"></ion-icon><?php echo getconstStr('Setup'); ?></a></li>
@@ -389,7 +392,7 @@ textarea {
     if (isset($_SERVER['needUpdate'])&&$_SERVER['needUpdate']) { ?>
     <div class="update_notice" style='position:absolute;'><?php echo getconstStr('NeedUpdate'); ?></div>
 <?php } ?>
-   
+    
 <?php $disktags = explode("|",getConfig('disktag'));
     if (count($disktags)>1) { ?>
     <div class="list-wrapper">
@@ -514,12 +517,14 @@ textarea {
                     if (isset($_POST['filenum'])) $filenum = $_POST['filenum'];
                     if (!isset($filenum) and isset($files['folder']['page'])) $filenum = ($files['folder']['page']-1)*200;
                     else $filenum = 0; ?>
+                        
+                        <?php if (!(isset($_SERVER['USER'])&&$_SERVER['USER']=='qcloud')) { ?>&nbsp;&nbsp;&nbsp;<button onclick="showthumbnails(this);"><?php echo getconstStr('ShowThumbnails'); ?></button><?php } ?>&nbsp;<button onclick="CopyAllDownloadUrl('.download');"><?php echo getconstStr('CopyAllDownloadUrl'); ?></button>
+                        
                 <table class="list-table" id="list-table">
-                    <?php if (!(isset($_SERVER['USER'])&&$_SERVER['USER']=='qcloud')) { ?>&nbsp;&nbsp;&nbsp;<button onclick="showthumbnails(this);"><?php echo getconstStr('ShowThumbnails'); ?></button><?php } ?>&nbsp;<button onclick="CopyAllDownloadUrl('.download');"><?php echo getconstStr('CopyAllDownloadUrl'); ?></button>
                     <tr id="tr0">
-                        <td class="file"><a onclick="sortby('a');"><?php echo getconstStr('File'); ?></a></td>
-                        <td class="updated_at"><a onclick="sortby('time');"><?php echo getconstStr('EditTime'); ?></a></td>
-                        <td class="size"><a onclick="sortby('size');"><?php echo getconstStr('Size'); ?></a></td>
+                        <th class="file"><a onclick="sortby('a');"><?php echo getconstStr('File'); ?></a></th>
+                        <th class="updated_at"><a onclick="sortby('time');"><?php echo getconstStr('EditTime'); ?></a></th>
+                        <th class="size"><a onclick="sortby('size');"><?php echo getconstStr('Size'); ?></a></th>
                     </tr>
                     <!-- Dirs -->
 <?php               //echo json_encode($files['children'], JSON_PRETTY_PRINT);
@@ -532,7 +537,7 @@ textarea {
 <?php                       if ($_SERVER['admin']) { ?>
                             <li class="operate"><ion-icon name="construct"></ion-icon><a><?php echo getconstStr('Operate'); ?></a>
                             <ul>
-                                <li><a onclick="showdiv(event,'encrypt',<?php echo $filenum;?>);"><ion-icon name="lock"></ion-icon><?php echo getconstStr('encrypt'); ?></a></li>
+                                <li><a onclick="showdiv(event,'encrypt',<?php echo $filenum;?>);"><ion-icon name="lock"></ion-icon><?php echo getconstStr('Encrypt'); ?></a></li>
                                 <li><a onclick="showdiv(event, 'rename',<?php echo $filenum;?>);"><ion-icon name="create"></ion-icon><?php echo getconstStr('Rename'); ?></a></li>
                                 <li><a onclick="showdiv(event, 'move',<?php echo $filenum;?>);"><ion-icon name="move"></ion-icon><?php echo getconstStr('Move'); ?></a></li>
                                 <li><a onclick="showdiv(event, 'copy',<?php echo $filenum;?>);"><ion-icon name="copy"></ion-icon><?php echo getconstStr('Copy'); ?></a></li>
@@ -720,7 +725,7 @@ textarea {
                 <input id="encrypt_sid" name="encrypt_sid" type="hidden" value="">
                 <input id="encrypt_hidden" name="encrypt_folder" type="hidden" value="">
                 <input id="encrypt_input" name="encrypt_newpass" type="text" value="" placeholder="<?php echo getconstStr('InputPasswordUWant'); ?>">
-                <?php if (getConfig('passfile')!='') {?><input name="operate_action" type="submit" value="<?php echo getconstStr('encrypt'); ?>"><?php } else { ?><br><label><?php echo getconstStr('SetpassfileBfEncrypt'); ?></label><?php } ?>
+                <?php if (getConfig('passfile')!='') {?><input name="operate_action" type="submit" value="<?php echo getconstStr('Encrypt'); ?>"><?php } else { ?><br><label><?php echo getconstStr('SetpassfileBfEncrypt'); ?></label><?php } ?>
                 </form>
             </div>
         </div>
@@ -806,10 +811,10 @@ textarea {
 	</div>
 <?php   }
     } ?>
-     <div style="color: rgba(247,247,249,0);"><?php echo date("Y-m-d H:i:s")." ".getconstStr('Week')[date("w")]." ".$_SERVER['REMOTE_ADDR'];?></div>
+    <div style="color: rgba(247,247,249,0);"><?php echo date("Y-m-d H:i:s")." ".getconstStr('Week')[date("w")]." ".$_SERVER['REMOTE_ADDR'];?></div>
     <center><small style="font-weight:100">Theme <a style="color:#ccc" href="https://github.com/Crazy-White/OneManager-theme-minus">minus</a> by <a style="color:#ccc" href="https://blog.poo.li/">Crazy白茫茫</a></small></center>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
 </body>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
 <?php if ($files) { ?>
 <?php if (isset($files['children']['head.md'])||isset($files['children']['readme.md'])) { ?><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@3.0.1/github-markdown.min.css">
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/marked@0.6.2/marked.min.js"></script><?php } ?>
@@ -1147,7 +1152,7 @@ textarea {
             tr1.setAttribute('data-to',1);
             var td1=document.createElement('td');
             tr1.appendChild(td1);
-            td1.setAttribute('class','uplist');
+            td1.setAttribute('style','width:30%');
             td1.setAttribute('id','upfile_td1_'+timea+'_'+i);
             td1.innerHTML=file.name+'<br>'+size_format(file.size);
             var td2=document.createElement('td');
@@ -1160,7 +1165,7 @@ textarea {
                 return;
             }
             var xhr1 = new XMLHttpRequest();
-            xhr1.open("GET", '?action=upbigfile&upbigfilename='+ encodeURIComponent(file.name) +'&filesize='+ file.size +'&lastModified='+ file.lastModified);
+            xhr1.open("GET", '?action=upbigfile&upbigfilename='+ encodeURIComponent((file.webkitRelativePath||file.name)) +'&filesize='+ file.size +'&lastModified='+ file.lastModified);
             xhr1.setRequestHeader('x-requested-with','XMLHttpRequest');
             xhr1.send(null);
             xhr1.onload = function(e){
@@ -1271,7 +1276,7 @@ textarea {
                             if (response['size']>0) {
                                 // contain size, upload finish. 有size说明是最终返回，上传结束
                                 var xhr3 = new XMLHttpRequest();
-                                xhr3.open("GET", '?action=del_upload_cache&filename=.'+file.lastModified+ '_' +file.size+ '_' +encodeURIComponent(file.name)+'.tmp');
+                                xhr3.open("GET", '?action=del_upload_cache&filelastModified='+file.lastModified+'&filesize='+file.size+'&filename='+encodeURIComponent((file.webkitRelativePath||file.name)));
                                 xhr3.setRequestHeader('x-requested-with','XMLHttpRequest');
                                 xhr3.send(null);
                                 xhr3.onload = function(e){
@@ -1280,7 +1285,7 @@ textarea {
 <?php if (!$_SERVER['admin']) { ?>
                                 var filemd5 = spark.end();
                                 var xhr4 = new XMLHttpRequest();
-                                xhr4.open("GET", '?action=uploaded_rename&filename='+encodeURIComponent(file.name)+'&filemd5='+filemd5);
+                                xhr4.open("GET", '?action=uploaded_rename&filename='+encodeURIComponent((file.webkitRelativePath||file.name))+'&filemd5='+filemd5);
                                 xhr4.setRequestHeader('x-requested-with','XMLHttpRequest');
                                 xhr4.send(null);
                                 xhr4.onload = function(e){
@@ -1536,6 +1541,4 @@ textarea {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/ionicons@4.4.4/dist/ionicons.js"></script>
 </html>
-
-
 
