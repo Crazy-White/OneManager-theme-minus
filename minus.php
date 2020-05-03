@@ -10,6 +10,7 @@
     <link rel="icon" href="<?php echo $_SERVER['base_disk_path'];?>favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="<?php echo $_SERVER['base_disk_path'];?>favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalizecss@3.0.0/normalize.min.css" />
+    <link rel="stylesheet" href="https://fonts.loli.net/css?family=Roboto:100,400,700" />
     <style type="text/css">
 .loading-box {
     position: fixed;
@@ -66,7 +67,7 @@ a {
 }
 
 .upload_style {
-    border-radius: 2px;
+    border-radius: .1em;
     background: #FAFAFB;
     padding: 1em
 }
@@ -84,18 +85,31 @@ a {
 button,
 select,
 input[type=submit],
-input[type=button] {
+input[type=button],
+.pagination .updated_at a {
+    transition: all 1s;
     outline: none;
     background: #66CCFF;
     color: #FFF;
     border-style: none;
-    border-radius: 4px;
-    padding: 8px 16px;
+    border-radius: .2em;
+    padding: .5em 1em;
+}
+.pagination .updated_at a {
+    display: inline-block;
+    text-align: center;
+    padding: 4px;
+    width: 1.2em;
+    height: 1.2em
 }
 
 button:hover,
 select:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+.pagination .updated_at a:hover,
 textarea {
+    opacity:0.5;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
@@ -109,6 +123,8 @@ textarea {
 }
 
 * {
+    font-family: "Microsoft YaHei", 微软雅黑;
+    font-family:  Roboto, Impact, Charcoal, sans-serif;
     max-width: 100%;
     overflow: auto;
     word-break: break-all
@@ -142,7 +158,7 @@ textarea {
 }
 
 .list-wrapper {
-    max-width: 720px;
+    max-width: 45em;
     width: 90%;
     margin: auto;
 }
@@ -153,7 +169,7 @@ textarea {
     display: inline-block;
     margin: 4px 2px;
     font-size: 1.5em;
-    width: 3em;
+    min-width: 4em;
     overflow: auto;
     border-bottom: solid 2px #dddddd;
     color: deepskyblue
@@ -166,14 +182,14 @@ textarea {
 .table-header {
     /* path */
     display: inline;
-    font-size: 16px;
+    font-size: 1em;
     font-weight: lighter;
     color: #000
 }
 
 .back-link {
     /* back */
-    font-size: 16px;
+    font-size: 1em;
     font-weight: bold
 }
 
@@ -193,22 +209,20 @@ textarea {
 }
 
 .list-table .file a {
-    word-wrap: break-all;
     color: #000
 }
 
 .list-table .updated_at {
     display: inline-block;
-    width: 45%;
     color: #ccc;
-    font-size: 10px
+    font-size: .625em
 }
 
 .list-table .size {
     display: inline-block;
-    width: 45%;
+    float: right;
     color: #ccc;
-    font-size: 10px
+    font-size: .625em
 }
 
 [data-to] {
@@ -247,12 +261,12 @@ textarea {
     width: 100%;
     height: 2em;
     margin: 1.5em auto 1em auto;
-    text-indent: 10px
+    text-indent: .625em
 }
 
 .loginstyle input[type="password"]::-webkit-input-placeholder {
     color: #A6AAB4;
-    font-size: 16px;
+    font-size: 1em;
 }
 
 .loginstyle input[type="submit"] {
@@ -260,22 +274,22 @@ textarea {
 }
 
 .operatediv div {
-    margin: 16px;
+    padding: 2em;
 }
 
 .operatediv_close {
     position: absolute;
-    right: 15px;
-    top: 15px;
+    right: .75em;
+    top: .75em;
 }
 
 .readme {
-    padding: 8px;
+    padding: .5em;
     background-color: rgba(245, 245, 245, 0.5);
 }
 
 .markdown-body {
-    padding: 20px;
+    padding: 2em;
     text-align: left
 }
 <?php if ($_SERVER['admin']) { ?>
@@ -296,7 +310,7 @@ textarea {
     border-style: none;
     border-radius: 2px;
     margin: 0;
-    padding: 0;
+    padding: .5em;
     z-index: 1;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
@@ -307,9 +321,15 @@ textarea {
 }
 
 .operate ul li {
+    transition:all 1s;
     list-style: none;
     display: block;
-    line-height: 40px;
+    margin: auto .5em;
+    line-height: 2em;
+}
+
+.operate ul li:hover {
+    background: lightcyan
 }
 
 .list-table tr[data-to]:hover .operate ul li a {
@@ -317,7 +337,7 @@ textarea {
 }
 
 .list-table tr[data-to]:hover .operate ul li a ion-icon {
-    margin-top: 12px;
+    margin-top: .75em;
 }
 <?php } ?>
     </style>
@@ -585,7 +605,7 @@ textarea {
                 <form action="" method="POST" id="nextpageform">
                     <input type="hidden" id="pagenum" name="pagenum" value="'. $pagenum .'">
                     <table width=100% border=0>
-                        <tr>
+                        <tr class="pagination">
                             <td width=60px align=center>';
                         if ($pagenum!=1) {
                             $prepagenum = $pagenum-1;
@@ -787,6 +807,7 @@ textarea {
 <?php   }
     } ?>
      <div style="color: rgba(247,247,249,0);"><?php echo date("Y-m-d H:i:s")." ".getconstStr('Week')[date("w")]." ".$_SERVER['REMOTE_ADDR'];?></div>
+    <center><small style="font-weight:100">Theme <a style="color:#ccc" href="https://github.com/Crazy-White/OneManager-theme-minus">minus</a> by <a style="color:#ccc" href="https://blog.poo.li/">Crazy白茫茫</a></small></center>
 </body>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
 <?php if ($files) { ?>
@@ -946,10 +967,10 @@ textarea {
         $readme.innerHTML = marked(document.getElementById('readme-md').innerText);
     }
     function showthumbnails(obj) {
-swal("正在获取缩略图", {
-  buttons: false,
-  timer: 1000,
-});
+        swal("正在获取缩略图", {
+          buttons: false,
+          timer: 1200,
+        });
         var files=document.getElementsByName('filelist');
         for ($i=0;$i<files.length;$i++) {
             str=files[$i].innerText;
@@ -1515,4 +1536,6 @@ swal("正在获取缩略图", {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/ionicons@4.4.4/dist/ionicons.js"></script>
 </html>
+
+
 
